@@ -65,4 +65,5 @@ export async function checkIPO() {
       }
     }
   }
+  return ipos;
 }
