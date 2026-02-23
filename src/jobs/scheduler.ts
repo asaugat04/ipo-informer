@@ -22,7 +22,7 @@ export function startScheduler() {
     {
       name: "ipo-informer",
       timezone: "Asia/Kathmandu",
-      // runOnInit: true,
+      runOnInit: true,
       recoverMissedExecutions: true,
     },
   );
