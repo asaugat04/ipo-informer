@@ -3,13 +3,12 @@ import { prisma } from "../../../lib/db";
 
 export async function GET(req: NextRequest) {
   const token = req.nextUrl.searchParams.get("token");
-  if (!token) {
-    return NextResponse.json({ error: "Missing token" }, { status: 400 });
-  }
+  const subscriber = token
+    ? await prisma.subscriber.findUnique({ where: { confirmToken: token } })
+    : null;
 
-  const subscriber = await prisma.subscriber.findUnique({ where: { confirmToken: token } });
   if (!subscriber) {
-    return NextResponse.json({ error: "Invalid or expired token" }, { status: 404 });
+    return NextResponse.redirect(new URL("/confirmed?ok=0", req.url));
   }
 
   await prisma.subscriber.update({
@@ -17,5 +16,5 @@ export async function GET(req: NextRequest) {
     data: { status: "CONFIRMED", confirmedAt: new Date() },
   });
 
-  return NextResponse.json({ message: "Subscription confirmed" });
+  return NextResponse.redirect(new URL("/confirmed?ok=1", req.url));
 }
