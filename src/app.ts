@@ -13,7 +13,14 @@ app.get("/corn", (req, res) =>
   }),
 );
 
-app.get("/send-mail", async (req, res) => {
+app.get("/send-mail", async (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    const err: any = new Error("Unauthorized cron request");
+    err.status = 401;
+    return next(err);
+  }
+
   const ipos = await checkIPO();
   console.log("cron hit");
   res.json(ipos);
