@@ -1,5 +1,5 @@
 import nodemailer from "nodemailer";
-import { log } from "../utils/logger";
+import { log } from "./logger";
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -10,17 +10,14 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-export async function sendIpoEmail(to: string, subject: string, html: string) {
-  const mailOptions = {
-    from: process.env.FROM_EMAIL,
-    to,
-    subject,
-    html,
-  };
-
-
+export async function sendMail(to: string, subject: string, html: string) {
   try {
-    const info = await transporter.sendMail(mailOptions);
+    const info = await transporter.sendMail({
+      from: process.env.FROM_EMAIL,
+      to,
+      subject,
+      html,
+    });
     log.info("Email sent", info.messageId, "to", to);
     return info;
   } catch (err) {
