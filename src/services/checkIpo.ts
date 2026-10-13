@@ -25,7 +25,7 @@ export interface IpoRow {
 // Replace this with the actual IPO fetching logic (external API call)
 export async function fetchIposFromProvider(): Promise<IPO[]> {
   const url =
-    "https://nepalipaisa.com/api/GetIpos?stockSymbol=&pageNo=1&itemsPerPage=10&pagePerDisplay=5&_=1771867739442";
+    "https://nepalipaisa.com/api/GetIpos";
 
   const response = await axios.get<IPOResponseDTO>(url);
   const data = response.data;

@@ -1,1 +1,1 @@
-export const recipients = ["asaugat04@gmail.com","basnetssahil@gmail.com"];
+export const recipients = process.env.MAIL_RECIPIENTS?.split(",");

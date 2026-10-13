@@ -18,6 +18,7 @@ export async function sendIpoEmail(to: string, subject: string, html: string) {
     html,
   };
 
+
   try {
     const info = await transporter.sendMail(mailOptions);
     log.info("Email sent", info.messageId, "to", to);
