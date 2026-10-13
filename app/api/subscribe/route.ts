@@ -8,18 +8,21 @@ import { generateToken } from "../../../lib/tokens";
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-
-  const allowed = await checkRateLimit(ip, "subscribe");
-  if (!allowed) {
-    return NextResponse.json({ error: "Too many requests, try again later" }, { status: 429 });
-  }
-
   const body = await req.json().catch(() => null);
   const email = body?.email?.trim().toLowerCase();
 
   if (!email || !EMAIL_RE.test(email)) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
+  }
+
+  // Vercel's edge appends the real client IP as the last hop; a client-sent
+  // x-forwarded-for value only ever prepends to that, so take the last entry.
+  const forwardedFor = req.headers.get("x-forwarded-for");
+  const ip = forwardedFor?.split(",").pop()?.trim() || "unknown";
+
+  const allowed = await checkRateLimit(ip, "subscribe");
+  if (!allowed) {
+    return NextResponse.json({ error: "Too many requests, try again later" }, { status: 429 });
   }
 
   const existing = await prisma.subscriber.findUnique({ where: { email } });

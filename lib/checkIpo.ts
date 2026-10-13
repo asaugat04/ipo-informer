@@ -39,7 +39,10 @@ export async function checkIPO() {
 
   log.info(`Notifying ${subscribers.length} subscribers of ${ipos.length} IPO(s)`);
 
-  const baseUrl = process.env.APP_URL || "";
+  const baseUrl = process.env.APP_URL;
+  if (!baseUrl) {
+    throw new Error("APP_URL is not set, refusing to send emails with a broken unsubscribe link");
+  }
 
   await Promise.all(
     ipos.flatMap((ipo) => {
