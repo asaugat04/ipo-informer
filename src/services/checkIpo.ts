@@ -47,23 +47,20 @@ export async function checkIPO() {
     return;
   }
 
-  for (const ipo of ipos) {
-    log.info(`Found ${recipients.length} recipients for IPO ${ipo.title}`);
+  await Promise.all(
+    ipos.flatMap((ipo) => {
+      log.info(`Found ${recipients.length} recipients for IPO ${ipo.title}`);
+      const subject = `New IPO: ${ipo.title}`;
+      const html = `<p>Dear recipient,</p><p>There is a new IPO: <strong>${
+        ipo.title
+      }</strong></p><pre>${JSON.stringify(ipo.payload, null, 2)}</pre>`;
 
-    // send email to each recipient and record SentNotification; batch or queue in production
-    for (const r of recipients) {
-      try {
-        const subject = `New IPO: ${ipo.title}`;
-        const html = `<p>Dear ${r},</p><p>There is a new IPO: <strong>${
-          ipo.title
-        }</strong></p><pre>${JSON.stringify(ipo.payload, null, 2)}</pre>`;
-
-        await sendIpoEmail(r, subject, html);
-      } catch (err) {
-        log.error(`Failed to notify ${r}`, err);
-        // in production: add retry mechanism, DLQ, or mark failure for manual review
-      }
-    }
-  }
+      return recipients.map((r) =>
+        sendIpoEmail(r, subject, html).catch((err) =>
+          log.error(`Failed to notify ${r}`, err),
+        ),
+      );
+    }),
+  );
   return ipos;
 }

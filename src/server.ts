@@ -4,8 +4,6 @@ import { log } from "./utils/logger";
 
 const PORT = Number(process.env.PORT || 4000);
 
-const server = app.listen(PORT, async () => {
+app.listen(PORT, () => {
   log.info(`Server listening on ${PORT}`);
-
-  // startScheduler();
 });
