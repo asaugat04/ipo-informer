@@ -1,0 +1,41 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 420px;
+  margin: 80px auto;
+  padding: 0 16px;
+  color: #1a1a1a;
+}
+
+form {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+input {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+p.status {
+  margin-top: 12px;
+  font-size: 14px;
+}
