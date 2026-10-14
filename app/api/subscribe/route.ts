@@ -4,6 +4,7 @@ import { log } from "../../../lib/logger";
 import { sendMail } from "../../../lib/mailer";
 import { checkRateLimit } from "../../../lib/rateLimit";
 import { generateToken } from "../../../lib/tokens";
+import { env } from "../../../lib/env";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -42,7 +43,7 @@ export async function POST(req: NextRequest) {
         data: { email, confirmToken, unsubscribeToken },
       });
 
-  const baseUrl = process.env.APP_URL || `${req.nextUrl.protocol}//${req.nextUrl.host}`;
+  const baseUrl = env.APP_URL;
   const confirmUrl = `${baseUrl}/api/confirm?token=${subscriber.confirmToken}`;
 
   try {

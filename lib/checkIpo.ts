@@ -3,6 +3,7 @@ import { prisma } from "./db";
 import { IPOResponseDTO } from "./ipo.types";
 import { log } from "./logger";
 import { sendMail } from "./mailer";
+import { env } from "./env";
 
 interface IPO {
   title: string;
@@ -39,10 +40,7 @@ export async function checkIPO() {
 
   log.info(`Notifying ${subscribers.length} subscribers of ${ipos.length} IPO(s)`);
 
-  const baseUrl = process.env.APP_URL;
-  if (!baseUrl) {
-    throw new Error("APP_URL is not set, refusing to send emails with a broken unsubscribe link");
-  }
+  const baseUrl = env.APP_URL;
 
   await Promise.all(
     ipos.flatMap((ipo) => {
